@@ -22,16 +22,25 @@ def listar_livros():
     print("\n Lista Livros:")
     tratar_resposta(resp)
 
+def obter_livro():
+    livro_uuid = input('UUID do livro: ').strip()
+    resp = requests.get(f'{API_URL}/livros/{livro_uuid}')
+    print('\nDetalhes do Livro:')
+    tratar_resposta(resp)
+
 def menu():
     while True:
         print('\n=== CLIENTE API DE LIVROS ===')
         print("1. Listar Livros")
+        print('2. Obter livro por UUID')
         print('0. Sair')
 
         opcao = input('Escolha a opção: ').strip()
 
         if opcao == '1':
             listar_livros()
+        elif opcao == '2':
+            obter_livro()
         elif opcao == '0':
             print("Encerrando cliente ...")
             break
