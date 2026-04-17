@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 from pydantic import BaseModel
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from typing import List
 
 
@@ -35,3 +35,13 @@ class Livro(BaseModel):
 @app.get(path="/livros", response_model=List[Livro])
 async def listar_livros():
     return [Livro(**dados) for dados in livros_db.values()]
+
+@app.get(path='/livros/{livro_id}', response_model=Livro,
+         responses={404: {'description': 'Livro não encontrado'}})
+async def obter_livro(livro_id: UUID) -> Livro:
+    for livro in livros_db.values():
+        if livro['uuid'] == livro_id:
+            return Livro(**livro)
+        
+    raise HTTPException(status_code=400,
+                        detail='Livro não encontrado')
