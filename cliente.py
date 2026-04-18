@@ -28,11 +28,30 @@ def obter_livro():
     print('\nDetalhes do Livro:')
     tratar_resposta(resp)
 
+def adicionar_livro():
+    print('\nDigite os dados do novo livro:')
+    autor = input('autor: ')
+    titulo = input('título: ')
+    editora = input('editora: ')
+    ano = int(input('ano de publicação: '))
+
+    payload ={
+        'autor': autor,
+        'titulo': titulo,
+        'editora': editora,
+        'ano': ano,
+    }
+
+    resp = requests.post(f'{API_URL}/livros/', json=payload)
+    print('\n Livro Adicionado:')
+    tratar_resposta(resp)
+
 def menu():
     while True:
         print('\n=== CLIENTE API DE LIVROS ===')
         print("1. Listar Livros")
         print('2. Obter livro por UUID')
+        print('3. adicionar livro(POST)')
         print('0. Sair')
 
         opcao = input('Escolha a opção: ').strip()
@@ -41,9 +60,13 @@ def menu():
             listar_livros()
         elif opcao == '2':
             obter_livro()
+        elif opcao == '3':
+            adicionar_livro()
         elif opcao == '0':
             print("Encerrando cliente ...")
             break
+        else:
+            print('\n Opção invávida!')
 
 if __name__ == "__main__":
     menu()
