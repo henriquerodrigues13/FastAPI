@@ -31,6 +31,12 @@ class Livro(BaseModel):
     editora: str
     ano: int
 
+class LivroPostPut(BaseModel):
+    autor: str
+    titulo: str
+    editora: str
+    ano: int
+
 # GET - lista todos os livros
 @app.get(path="/livros", response_model=List[Livro])
 async def listar_livros():
@@ -45,3 +51,20 @@ async def obter_livro(livro_id: UUID) -> Livro:
         
     raise HTTPException(status_code=400,
                         detail='Livro não encontrado')
+
+@app.post('/livros', response_model=Livro)
+async def adicionar_livro(livro: LivroPostPut) -> Livro:
+    novo_uuid = uuid4()
+    novo_id = max(livros_db.keys()) +1 if livros_db else 1
+
+    livro_gravado = Livro(
+        uuid= novo_uuid,
+        autor=livro.autor,
+        titulo=livro.titulo,
+        editora=livro.editora,
+        ano=livro.ano
+    )
+
+    livros_db[novo_id] = livro_gravado.model_dump()
+    
+    return livro_gravado
