@@ -68,3 +68,20 @@ async def adicionar_livro(livro: LivroPostPut) -> Livro:
     livros_db[novo_id] = livro_gravado.model_dump()
     
     return livro_gravado
+
+@app.put('/livros/{livro_id}', response_model=Livro,
+         responses={404: {"description": "Livro não encontrado"}})
+async def atualizar_livro(livro_id: UUID, livro_update: LivroPostPut) -> Livro:
+    for index, livro in livros_db.items():
+        if livro['uuid'] == livro_id:
+            livros_db[index] = dict(
+                uuid= livro_id,
+                autor = livro_update.autor,
+                titulo =livro_update.titulo,
+                editora =livro_update.editora,
+                ano =livro_update.ano
+            )
+
+            return Livro(**livros_db[index])
+        
+    raise HTTPException(status_code=404, detail='Livro não encontrado.')
