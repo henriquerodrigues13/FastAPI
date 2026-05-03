@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
-from typing import List
+from typing import List, Optional
 
 
 app = FastAPI(title='API de Livros')
@@ -36,6 +36,13 @@ class LivroPostPut(BaseModel):
     titulo: str
     editora: str
     ano: int
+
+class LivroPatch(BaseModel):
+    autor: Optional[str] = None
+    titulo: Optional[str] = None
+    editora: Optional[str] = None
+    ano: Optional[int] = None
+
 
 # GET - lista todos os livros
 @app.get(path="/livros", response_model=List[Livro])
@@ -81,6 +88,19 @@ async def atualizar_livro(livro_id: UUID, livro_update: LivroPostPut) -> Livro:
                 editora =livro_update.editora,
                 ano =livro_update.ano
             )
+
+            return Livro(**livros_db[index])
+        
+    raise HTTPException(status_code=404, detail='Livro não encontrado.')
+
+@app.patch('/livro/{livro_id}', response_model=Livro,
+           responses={404: {'description': 'livro não encontrado'}})
+async def atualizar_parcial(livro_id: UUID, livro_update: LivroPatch) -> Livro:
+
+    for index, livro in livros_db.items():
+        if livro['uuid'] == livro_id:
+            for key, value in livro_update.model_dump(exclude_defaults=True).items():
+                livro[key] = value
 
             return Livro(**livros_db[index])
         
