@@ -46,12 +46,33 @@ def adicionar_livro():
     print('\n Livro Adicionado:')
     tratar_resposta(resp)
 
+def atualizar_livro():
+    livro_uuid = input("UUID do livro a atualizar (PUT): ").strip()
+    
+    print("\nDigite os NOVOS dados completos do livro:")
+    autor = input('autor: ')
+    titulo = input('título: ')
+    editora = input('editora: ')
+    ano = int(input('ano de publicação: '))
+
+    payload ={
+        'autor': autor,
+        'titulo': titulo,
+        'editora': editora,
+        'ano': ano,
+    }
+
+    resp = requests.put(f'{API_URL}/livros/{livro_uuid}', json=payload)
+    print('\n Livro Atualizado:')
+    tratar_resposta(resp)
+
 def menu():
     while True:
         print('\n=== CLIENTE API DE LIVROS ===')
         print("1. Listar Livros")
         print('2. Obter livro por UUID')
         print('3. adicionar livro(POST)')
+        print('4. Atualizar livro inteiro (PUT)')
         print('0. Sair')
 
         opcao = input('Escolha a opção: ').strip()
@@ -62,6 +83,8 @@ def menu():
             obter_livro()
         elif opcao == '3':
             adicionar_livro()
+        elif opcao == '4':
+            atualizar_livro()
         elif opcao == '0':
             print("Encerrando cliente ...")
             break
