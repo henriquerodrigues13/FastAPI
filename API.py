@@ -43,6 +43,9 @@ class LivroPatch(BaseModel):
     editora: Optional[str] = None
     ano: Optional[int] = None
 
+class ConfirmaDelete(BaseModel):
+    mensagem: str
+    uuid: UUID
 
 # GET - lista todos os livros
 @app.get(path="/livros", response_model=List[Livro])
@@ -105,3 +108,16 @@ async def atualizar_parcial(livro_id: UUID, livro_update: LivroPatch) -> Livro:
             return Livro(**livros_db[index])
         
     raise HTTPException(status_code=404, detail='Livro não encontrado.')
+
+@app.delete('/livro/{livro_id}', response_model=ConfirmaDelete,
+           responses={404: {'description': 'Livro não encontrado.'}})
+async def deletar_livro(livro_id: UUID) -> ConfirmaDelete:
+
+    for index, livro in livros_db.items():
+        if livro['uuid'] == livro_id:
+            del livros_db[index]
+
+            return ConfirmaDelete(mensagem=f'Livro {livro_id} deletado.', uuid= livro_id)
+        
+        raise HTTPException(status_code=404, detail='Livro não encontrado.')
+    

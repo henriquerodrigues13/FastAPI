@@ -66,6 +66,29 @@ def atualizar_livro():
     print('\n Livro Atualizado:')
     tratar_resposta(resp)
 
+def atualizar_parcial():
+    livro_uuid = input("UUID do livro a atualizar parcial(PATCH): ").strip()
+    
+    print("\nDigite APENAS os campos que deseja atualizar (deixe em branco para ignora):")
+    autor = input('autor: ')
+    titulo = input('título: ')
+    editora = input('editora: ')
+    ano = input('ano de publicação: ')
+
+    payload ={}
+
+    if autor:
+        payload['autor'] = autor
+    if editora:
+        payload['editora'] = editora
+    if titulo:
+        payload['titula'] = titulo
+    if ano:
+        payload['ano'] = int(ano)
+    resp = requests.patch(f'{API_URL}/livros/{livro_uuid}', json=payload)
+    print('\n Livro Atualizado parcialmente (PATCH):')
+    tratar_resposta(resp)
+
 def menu():
     while True:
         print('\n=== CLIENTE API DE LIVROS ===')
@@ -73,6 +96,7 @@ def menu():
         print('2. Obter livro por UUID')
         print('3. adicionar livro(POST)')
         print('4. Atualizar livro inteiro (PUT)')
+        print('5. Atualizar parcial (PATCH)')
         print('0. Sair')
 
         opcao = input('Escolha a opção: ').strip()
@@ -85,6 +109,8 @@ def menu():
             adicionar_livro()
         elif opcao == '4':
             atualizar_livro()
+        elif opcao == '5':
+            atualizar_parcial()
         elif opcao == '0':
             print("Encerrando cliente ...")
             break
