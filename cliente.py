@@ -89,6 +89,13 @@ def atualizar_parcial():
     print('\n Livro Atualizado parcialmente (PATCH):')
     tratar_resposta(resp)
 
+def deletar_livro():
+    livro_uuid = input("UUID do livro a deletar (DELETE): ").strip()
+    resp = requests.delete(f'{API_URL}/livros/{livro_uuid}')
+
+    print('\n Resultado da exclusão (PATCH):')
+    tratar_resposta(resp)
+
 def menu():
     while True:
         print('\n=== CLIENTE API DE LIVROS ===')
@@ -97,6 +104,7 @@ def menu():
         print('3. adicionar livro(POST)')
         print('4. Atualizar livro inteiro (PUT)')
         print('5. Atualizar parcial (PATCH)')
+        print('6. Deletar livro (DELETE)')
         print('0. Sair')
 
         opcao = input('Escolha a opção: ').strip()
@@ -111,6 +119,8 @@ def menu():
             atualizar_livro()
         elif opcao == '5':
             atualizar_parcial()
+        elif opcao == '6':
+            deletar_livro()
         elif opcao == '0':
             print("Encerrando cliente ...")
             break

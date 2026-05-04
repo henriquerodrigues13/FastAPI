@@ -96,7 +96,7 @@ async def atualizar_livro(livro_id: UUID, livro_update: LivroPostPut) -> Livro:
         
     raise HTTPException(status_code=404, detail='Livro não encontrado.')
 
-@app.patch('/livro/{livro_id}', response_model=Livro,
+@app.patch('/livros/{livro_id}', response_model=Livro,
            responses={404: {'description': 'livro não encontrado'}})
 async def atualizar_parcial(livro_id: UUID, livro_update: LivroPatch) -> Livro:
 
@@ -109,7 +109,7 @@ async def atualizar_parcial(livro_id: UUID, livro_update: LivroPatch) -> Livro:
         
     raise HTTPException(status_code=404, detail='Livro não encontrado.')
 
-@app.delete('/livro/{livro_id}', response_model=ConfirmaDelete,
+@app.delete('/livros/{livro_id}', response_model=ConfirmaDelete,
            responses={404: {'description': 'Livro não encontrado.'}})
 async def deletar_livro(livro_id: UUID) -> ConfirmaDelete:
 
