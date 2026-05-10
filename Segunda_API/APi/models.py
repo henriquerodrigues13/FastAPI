@@ -43,7 +43,7 @@ class LivroPatch(BaseModel):
 
     autor:   str | None = None
     titulo:  str | None = None
-    editora: str | None = None
+    editor: str | None = None
     ano:     int | None = None
 
 class ConfirmaDelete(BaseModel):

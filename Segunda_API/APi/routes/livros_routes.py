@@ -13,13 +13,13 @@ SessionDep = Annotated[Session, Depends(get_session)]
 # GET - lista todos os livros
 @router.get(path="/", response_model=list[LivroRespota])
 async def listar_livros(session: SessionDep) -> list[LivroRespota]:
-    livros = session.execute(select(Livro)).all()
+    livros = session.scalars(select(Livro)).all()
 
     return [LivroRespota.model_validate(livro) for livro in livros]
 
 @router.get(path='/{livro_id}', response_model=LivroRespota,
          responses={404: {'description': 'Livro não encontrado'}})
-async def obter_livro(livro_id: UUID, session: SessionDep) -> Livro:
+async def obter_livro(livro_id: UUID, session: SessionDep) -> LivroRespota:
     if livro := session.execute(select(Livro).where(Livro.uuid == livro_id)).scalar_one():
         return LivroRespota.model_validate(livro)
     raise HTTPException(status_code=404,detail='Livro não encontrado')
@@ -32,11 +32,12 @@ async def adicionar_livro(livro: LivroPost, session: SessionDep) -> LivroRespota
         uuid= novo_uuid,
         autor=livro.autor,
         titulo=livro.titulo,
-        editora=livro.editora,
+        editor=livro.editor,
         ano=livro.ano
     )
 
     session.add(livro_gravado)
     session.commit()
+    session.refresh(livro_gravado)
 
     return LivroRespota.model_validate(livro_gravado)
