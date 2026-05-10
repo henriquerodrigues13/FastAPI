@@ -1,4 +1,3 @@
-from Library.bin.deploy_lib import Config
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy import Integer, String
